@@ -3,6 +3,14 @@ import re
 import nltk
 import sys
 import getopt
+import os
+
+from dictionary import Dictionary
+from postings import Postings
+
+DEBUG_LIMIT = 20
+STEMMER = nltk.stem.PorterStemmer()
+
 
 def usage():
     print("usage: " + sys.argv[0] + " -i directory-of-documents -d dictionary-file -p postings-file")
@@ -13,8 +21,13 @@ def build_index(in_dir, out_dict, out_postings):
     then output the dictionary file and postings file
     """
     print('indexing...')
-    # This is an empty method
-    # Pls implement your code in below
+
+    indexing_doc_files = sorted(map(int, os.listdir(in_dir)))
+    dictionary = Dictionary(out_dict)
+    postings_list = Postings(out_postings)
+
+    dictionary.save()
+
 
 input_directory = output_file_dictionary = output_file_postings = None
 

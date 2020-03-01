@@ -3,6 +3,8 @@ import re
 import nltk
 import sys
 import getopt
+from dictionary import Dictionary
+import util
 
 def usage():
     print("usage: " + sys.argv[0] + " -d dictionary-file -p postings-file -q file-of-queries -o output-file-of-results")
@@ -13,8 +15,18 @@ def run_search(dict_file, postings_file, queries_file, results_file):
     perform searching on the given queries file and output the results to a file
     """
     print('running search on the queries...')
-    # This is an empty method
-    # Pls implement your code in below
+
+    dictionary = Dictionary(dict_file)
+    dictionary.load()
+
+    with open(queries_file, 'r') as query_file:
+        with open(results_file, 'w') as output_file:
+            for query in query_file:
+                processed_query = util.process_query(query)
+                result = util.execute_query(processed_query, dictionary, postings_file)
+                result = " ".join(result) + "\n"
+                output_file.write(result)
+
 
 dictionary_file = postings_file = file_of_queries = output_file_of_results = None
 

@@ -4,12 +4,13 @@ import nltk
 import sys
 import getopt
 import os
+import pickle
+
 
 from dictionary import Dictionary
-from postings import Postings
+import util
 
-DEBUG_LIMIT = 20
-STEMMER = nltk.stem.PorterStemmer()
+DEBUG_LIMIT = 1
 
 
 def usage():
@@ -22,9 +23,29 @@ def build_index(in_dir, out_dict, out_postings):
     """
     print('indexing...')
 
-    indexing_doc_files = sorted(map(int, os.listdir(in_dir)))
+    indexing_doc_files = sorted(map(int, os.listdir(in_dir)))[0:DEBUG_LIMIT]
+
     dictionary = Dictionary(out_dict)
-    postings_list = Postings(out_postings)
+
+    temp_dictionary = dict()
+    temp_dictionary["$all_docs$"] = set()
+    for document in indexing_doc_files:
+        temp_dictionary["$all_docs$"].add((document, 0))
+
+        terms = util.read_document(in_dir, document)
+        for term in terms:
+            if term in temp_dictionary:
+                doc_set = temp_dictionary[term]
+                doc_set.add((document, 0))
+            else:
+                temp_dictionary[term] = set()
+                temp_dictionary[term].add((document, 0))
+
+    with open(out_postings, 'wb') as posting_file:
+        for token, docs_set in temp_dictionary.items():
+            offset = posting_file.tell()
+            dictionary.add_term(token, len(docs_set), offset)
+            pickle.dump(sorted(list(docs_set)), posting_file)
 
     dictionary.save()
 

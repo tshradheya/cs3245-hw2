@@ -1,0 +1,2 @@
+thousand AND last
+hi AND (hello OR bye)

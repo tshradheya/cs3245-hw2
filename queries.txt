@@ -1,2 +1,3 @@
 thousand AND last
 hi AND (hello OR bye)
+bill OR Gates AND (vista OR XP) AND NOT mac

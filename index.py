@@ -8,6 +8,7 @@ import pickle
 
 
 from dictionary import Dictionary
+from skippointer import SkipPointer
 import util
 
 DEBUG_LIMIT = 5
@@ -41,13 +42,17 @@ def build_index(in_dir, out_dict, out_postings):
                 temp_dictionary[term] = set()
                 temp_dictionary[term].add((document, 0))
 
-    with open(out_postings, 'wb') as posting_file:
+    with open("temp_file.txt", 'wb') as temp_posting_file:
         for token, docs_set in temp_dictionary.items():
-            offset = posting_file.tell()
+            offset = temp_posting_file.tell()
             dictionary.add_term(token, len(docs_set), offset)
-            pickle.dump(sorted(list(docs_set)), posting_file)
+            pickle.dump(sorted(list(docs_set)), temp_posting_file)
 
+    skipPointer = SkipPointer()
+    skipPointer.update_skip(out_postings, "temp_file.txt", dictionary, "ROOT_L")
     dictionary.save()
+
+    os.remove("temp_file.txt")
 
 
 input_directory = output_file_dictionary = output_file_postings = None

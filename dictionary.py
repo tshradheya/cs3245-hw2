@@ -17,6 +17,9 @@ class Dictionary(object):
         else:
             return -1
 
+    def update_offset(self, term, offset):
+        self.terms[term][1] = offset
+
     def save(self):
         with open(self.disk_file, 'wb') as f:
             pickle.dump(self.terms, f)

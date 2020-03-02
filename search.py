@@ -5,6 +5,7 @@ import sys
 import getopt
 from dictionary import Dictionary
 import util
+import time
 
 def usage():
     print("usage: " + sys.argv[0] + " -d dictionary-file -p postings-file -q file-of-queries -o output-file-of-results")
@@ -52,4 +53,6 @@ if dictionary_file == None or postings_file == None or file_of_queries == None o
     usage()
     sys.exit(2)
 
+test = time.time()
 run_search(dictionary_file, postings_file, file_of_queries, file_of_output)
+print(time.time() - test)

@@ -24,7 +24,7 @@ def run_search(dict_file, postings_file, queries_file, results_file):
             for query in query_file:
                 processed_query = util.reverse_polish_expression(query)
                 result = util.execute_query(processed_query, dictionary, postings_file)
-                result = " ".join(result) + "\n"
+                result = util.format_result(result)
                 output_file.write(result)
 
 

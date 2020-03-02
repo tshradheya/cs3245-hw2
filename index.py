@@ -10,7 +10,7 @@ import pickle
 from dictionary import Dictionary
 import util
 
-DEBUG_LIMIT = 1
+DEBUG_LIMIT = 5
 
 
 def usage():
@@ -23,7 +23,7 @@ def build_index(in_dir, out_dict, out_postings):
     """
     print('indexing...')
 
-    indexing_doc_files = sorted(map(int, os.listdir(in_dir)))[0:DEBUG_LIMIT]
+    indexing_doc_files = sorted(map(int, os.listdir(in_dir)))
 
     dictionary = Dictionary(out_dict)
 

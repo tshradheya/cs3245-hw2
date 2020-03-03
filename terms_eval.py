@@ -18,9 +18,9 @@ def eval_NOT(posting_file, dictionary, first):
     idx_s = 0
 
     while idx_f < len(first_list) and idx_s < len(all_docs_list):
-        f = first_list[idx_f][0]
-        s = all_docs_list[idx_s][0]
-        if f == s:
+        first_doc_id = first_list[idx_f][0]
+        second_doc_id = all_docs_list[idx_s][0]
+        if first_doc_id == second_doc_id:
             idx_f += 1
             idx_s += 1
         else:
@@ -52,13 +52,13 @@ def eval_OR(posting_file, dictionary, first, second):
     idx_s = 0
 
     while idx_f < len(first_list) and idx_s < len(second_list):
-        f = first_list[idx_f][0]
-        s = second_list[idx_s][0]
-        if f == s:
+        first_doc_id = first_list[idx_f][0]
+        second_doc_id = second_list[idx_s][0]
+        if first_doc_id == second_doc_id:
             result.append(first_list[idx_f])
             idx_f += 1
             idx_s += 1
-        elif f < s:
+        elif first_doc_id < second_doc_id:
             result.append(first_list[idx_f])
             idx_f += 1
         else:
@@ -100,23 +100,23 @@ def eval_AND(posting_file, dictionary, first, second):
         idx_s = 0
 
         while idx_f < len(first_list) and idx_s < len(second_list):
-            f = first_list[idx_f][0]
-            s = second_list[idx_s][0]
+            first_doc_id = first_list[idx_f][0]
+            second_doc_id = second_list[idx_s][0]
 
-            skip_f = first_list[idx_f][1]
-            skip_s = second_list[idx_s][1]
-            if f == s:
+            first_skip_idx = first_list[idx_f][1]
+            second_skip_idx = second_list[idx_s][1]
+            if first_doc_id == second_doc_id:
                 result.append(first_list[idx_f])
                 idx_f += 1
                 idx_s += 1
-            elif f < s:
-                if skip_f != 0 and skip_f < len(first_list) and first_list[skip_f][0] <= s:
-                    idx_f = skip_f
+            elif first_doc_id < second_doc_id:
+                if first_skip_idx != 0 and first_skip_idx < len(first_list) and first_list[first_skip_idx][0] <= second_doc_id:
+                    idx_f = first_skip_idx
                 else:
                     idx_f += 1
             else:
-                if skip_s != 0 and skip_s < len(second_list) and second_list[skip_s][0] <= f:
-                    idx_s = skip_s
+                if second_skip_idx != 0 and second_skip_idx < len(second_list) and second_list[second_skip_idx][0] <= first_doc_id:
+                    idx_s = second_skip_idx
                 else:
                     idx_s += 1
 
@@ -128,23 +128,23 @@ def eval_AND_Lists(first_list, second_list):
     idx_s = 0
 
     while idx_f < len(first_list) and idx_s < len(second_list):
-        f = first_list[idx_f][0]
-        s = second_list[idx_s][0]
+        first_doc_id = first_list[idx_f][0]
+        second_doc_id = second_list[idx_s][0]
 
-        skip_f = idx_f + int(sqrt(len(first_list)))
-        skip_s = idx_s + int(sqrt((len(second_list))))
-        if f == s:
+        first_skip_idx = idx_f + int(sqrt(len(first_list)))
+        second_skip_idx = idx_s + int(sqrt((len(second_list))))
+        if first_doc_id == second_doc_id:
             result.append(first_list[idx_f])
             idx_f += 1
             idx_s += 1
-        elif f < s:
-            if skip_f != 0 and skip_f < len(first_list) and first_list[skip_f][0] <= s:
-                idx_f = skip_f
+        elif first_doc_id < second_doc_id:
+            if first_skip_idx != 0 and first_skip_idx < len(first_list) and first_list[first_skip_idx][0] <= second_doc_id:
+                idx_f = first_skip_idx
             else:
                 idx_f += 1
         else:
-            if skip_s != 0 and skip_s < len(second_list) and second_list[skip_s][0] <= f:
-                idx_s = skip_s
+            if second_skip_idx != 0 and second_skip_idx < len(second_list) and second_list[second_skip_idx][0] <= first_doc_id:
+                idx_s = second_skip_idx
             else:
                 idx_s += 1
 
@@ -157,18 +157,18 @@ def eval_AND_List_And_Term(res_list, term_list):
     idx_s = 0
 
     while idx_f < len(res_list) and idx_s < len(term_list):
-        f = res_list[idx_f][0]
-        s = term_list[idx_s][0]
+        first_doc_id = res_list[idx_f][0]
+        second_doc_id = term_list[idx_s][0]
 
         skip_ptr = term_list[idx_s][1]
-        if f == s:
+        if first_doc_id == second_doc_id:
             result.append(res_list[idx_f])
             idx_f += 1
             idx_s += 1
-        elif f < s:
+        elif first_doc_id < second_doc_id:
             idx_f += 1
         else:
-            if skip_ptr != 0 and skip_ptr < len(term_list) and term_list[skip_ptr][0] <= f:
+            if skip_ptr != 0 and skip_ptr < len(term_list) and term_list[skip_ptr][0] <= first_doc_id:
                 idx_s = skip_ptr
             else:
                 idx_s += 1

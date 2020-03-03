@@ -20,3 +20,6 @@ grower AND NOT relief
 (, AND the) AND (in AND and) AND NOT NOT (for AND come) AND (in AND and) AND NOT NOT (in AND and)
 NOT NOT BAHIA
 NOT NOT NOT NOT BAHIA
+(NOT BAHIA) AND dean
+dean
+(NOT BAHIA) AND (NOT dean)

@@ -10,6 +10,9 @@ Give an overview of your program, describe the important algorithms/steps
 in your program, and discuss your experiments in general.  A few paragraphs 
 are usually sufficient.
 
+The assignment was done in three main parts:
+a) Indexing - 
+
 == Files included with this submission ==
 
 - index.py: To index the corpus and form dictionary and postings stored on disk

@@ -74,12 +74,12 @@ def execute_query(query, dictionary, posting_file):
             intermediate_result = []
             if token == 'NOT':
                 term = operands.pop()
-                # if i < len_query - 1 and len(operands) > 0 and query[i+1] == "AND":
-                #     i += 1
-                #     later_term = operands.pop()
-                #     intermediate_result = terms_eval.eval_AND_NOT(posting_file, dictionary, later_term, term)
-                # else:
-                intermediate_result = terms_eval.eval_NOT(posting_file, dictionary, term)
+                if i < len_query - 1 and len(operands) > 0 and query[i+1] == "AND":
+                    i += 1
+                    later_term = operands.pop()
+                    intermediate_result = terms_eval.eval_AND_NOT(posting_file, dictionary, later_term, term)
+                else:
+                    intermediate_result = terms_eval.eval_NOT(posting_file, dictionary, term)
             elif token == 'AND':
                 first = operands.pop()
                 second = operands.pop()

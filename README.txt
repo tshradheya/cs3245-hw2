@@ -10,6 +10,14 @@ Give an overview of your program, describe the important algorithms/steps
 in your program, and discuss your experiments in general.  A few paragraphs 
 are usually sufficient.
 
+The assignment was done in three main parts:
+
+a) Indexing - We start off by iterating through all documents one by one. For each document, we get the tokenized sentences. For each of these sentences, we get the stemmed words. For each of the unique words, we store a document list that maintains the documents ids in which each word is found. Once we have computed the document list for every term in the vocabulary we form the dictonary file by storing the term, document frequency (given by length of list) and the offset. We used a temporary posting file initially so that we could store the skip pointers after all the processing was done. The posting file stores the posting/document list for each term in the vocabulary. Each element of the document list is a tuple of <documentId, index_of_next_skip_doc>.
+
+b) Searching - Given a query, we first tokenize it and then get the reverse polish notation using the Shunting yard algorithm. We then evaluate the postfix expression to compute the result of the query. We used skip pointers to optimize when AND operation between two terms. We also optimized the AND NOT operation by treating it as a separate case. We did not compute NOT of a term directly. Instead, we checked if a NOT operation is followed by AND. If so, we avoid the expensive NOT operation and iterate through the lists to perform the AND NOT operation. Other operations very implemented in the known methods.
+
+c) Skip Pointers - We used the heuristics defined in the class. We used √L evenly spaced skip pointers in the posting list. We stored the skip pointers in the posting list as a post-processing step. 
+
 == Files included with this submission ==
 
 - index.py: To index the corpus and form dictionary and postings stored on disk

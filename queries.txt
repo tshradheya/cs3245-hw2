@@ -23,3 +23,6 @@ NOT NOT NOT NOT BAHIA
 (NOT BAHIA) AND dean
 dean
 (NOT BAHIA) AND (NOT dean)
+(NOT BAHIA) AND NOT (NOT dean)
+BAHIA AND NOT (dean OR kenneth OR douglas)
+BAHIA AND NOT unsworth

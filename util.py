@@ -62,8 +62,11 @@ def execute_query(query, dictionary, posting_file):
     # Merge for AND, OR, NOT
     OPERATORS = ['NOT', 'AND', 'OR']
     operands = []
+    len_query = len(query)
 
-    for token in query:
+    i = 0
+    while i < len_query:
+        token = query[i]
         if token not in OPERATORS:
             operands.append(token)
 
@@ -71,7 +74,12 @@ def execute_query(query, dictionary, posting_file):
             intermediate_result = []
             if token == 'NOT':
                 term = operands.pop()
-                intermediate_result = terms_eval.eval_NOT(posting_file, dictionary, term)
+                if i < len_query - 1 and len(operands) > 0 and query[i+1] == "AND":
+                    i += 1
+                    later_term = operands.pop()
+                    intermediate_result = terms_eval.eval_AND_NOT(posting_file, dictionary, later_term, term)
+                else:
+                    intermediate_result = terms_eval.eval_NOT(posting_file, dictionary, term)
             elif token == 'AND':
                 first = operands.pop()
                 second = operands.pop()
@@ -80,7 +88,9 @@ def execute_query(query, dictionary, posting_file):
                 first = operands.pop()
                 second = operands.pop()
                 intermediate_result = terms_eval.eval_OR(posting_file, dictionary, first, second)
-            operands.append(intermediate_result)    
+            operands.append(intermediate_result)
+
+        i += 1
 
     final_result = operands.pop()
     if isinstance(final_result, str):

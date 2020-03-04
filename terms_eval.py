@@ -138,12 +138,15 @@ def eval_AND_Lists(first_list, second_list):
     len_first_list = len(first_list)
     len_second_list = len(second_list)
 
+    skip_first_list = int(sqrt(len_first_list))
+    skip_second_list = int(sqrt(len_second_list))
+
     while idx_f < len_first_list and idx_s < len_second_list:
         first_doc_id = first_list[idx_f][0]
         second_doc_id = second_list[idx_s][0]
 
-        first_skip_idx = idx_f + int(sqrt(len_first_list))
-        second_skip_idx = idx_s + int(sqrt(len_second_list))
+        first_skip_idx = idx_f + skip_first_list
+        second_skip_idx = idx_s + skip_second_list
         if first_doc_id == second_doc_id:
             result.append(first_list[idx_f])
             idx_f += 1
@@ -255,11 +258,13 @@ def eval_AND_NOT_Lists(first_list, second_list):
     len_first_list = len(first_list)
     len_second_list = len(second_list)
 
+    skip_second_list = int(sqrt(len_second_list))
+
     while idx_f < len_first_list and idx_s < len_second_list:
         first_doc_id = first_list[idx_f][0]
         second_doc_id = second_list[idx_s][0]
 
-        second_skip_idx = idx_s + int(sqrt(len_second_list))
+        second_skip_idx = idx_s + skip_second_list
         if first_doc_id == second_doc_id:
             idx_f += 1
             idx_s += 1

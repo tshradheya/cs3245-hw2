@@ -11,6 +11,7 @@ def get_posting_list(posting_file, offset):
         file.seek(offset)
         return pickle.load(file)
 
+#retrieves the tokenzied/stemmed words in each document
 def read_document(directory, doc):
     terms = []
     with open(os.path.join(directory, str(doc))) as in_file:
@@ -23,9 +24,9 @@ def read_document(directory, doc):
 
         return terms
 
+#converts the input query to a postfix expression using Shunting yard algorithm
 def reverse_polish_expression(query):
-    # Parse
-    # Convert to Postfix
+
     query_tokens = nltk.tokenize.word_tokenize(query)
     postfix_expression = []
     temp_stack = []
@@ -57,9 +58,9 @@ def reverse_polish_expression(query):
 
     return postfix_expression
 
+#computes the result of the user query
 def execute_query(query, dictionary, posting_file):
-    # Use stack to evaluate
-    # Merge for AND, OR, NOT
+
     OPERATORS = ['NOT', 'AND', 'OR']
     operands = []
     len_query = len(query)
@@ -74,6 +75,7 @@ def execute_query(query, dictionary, posting_file):
             intermediate_result = []
             if token == 'NOT':
                 term = operands.pop()
+                #optimize for AND NOT queries
                 if i < len_query - 1 and len(operands) > 0 and query[i+1] == "AND":
                     i += 1
                     later_term = operands.pop()

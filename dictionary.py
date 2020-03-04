@@ -1,5 +1,7 @@
 import pickle
 
+# getter/setter functions related to the dictionary
+
 class Dictionary(object):
     def __init__(self, disk_file):
         self.terms = {}

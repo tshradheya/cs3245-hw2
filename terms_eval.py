@@ -6,7 +6,7 @@ ALL_DOCS = "$all_docs$"
 def eval_NOT(posting_file, dictionary, first):
     """
     Evaluates NOT of first
-    :param posting_file: posting.txt disk file
+    :param posting_file: postings.txt disk file
     :param dictionary: in memory dictionary
     :param first: term or result of which NOT needs to be done
     :return: Result in format of posting list of NOT a
@@ -52,7 +52,7 @@ def eval_NOT(posting_file, dictionary, first):
 def eval_OR(posting_file, dictionary, first, second):
     """
     Evaluates first OR second  [can be term or direct result]
-    :param posting_file: posting.txt disk file
+    :param posting_file: postings.txt disk file
     :param dictionary: in memory dictionary
     :param first: term or result of which OR needs to be done
     :param second: term or result of which OR needs to be done
@@ -113,7 +113,7 @@ def eval_AND(posting_file, dictionary, first, second):
     """
     Evaluates first AND second  [can be term or direct result]
     Uses skip pointer if one of argument is directly a posting list with correct skips
-    :param posting_file: posting.txt disk file
+    :param posting_file: postings.txt disk file
     :param dictionary: in memory dictionary
     :param first: term or result of which AND needs to be done
     :param second: term or result of which AND needs to be done
@@ -260,7 +260,7 @@ def eval_AND_List_And_Term(res_list, term_list):
 def eval_AND_NOT(posting_file, dictionary, first, second):
     """
     first AND NOT second [using skip pointer]
-    :param posting_file: posting.txt
+    :param posting_file: postings.txt
     :param dictionary: Dictionary object in memory
     :param first: first postings list
     :param second: second postings list

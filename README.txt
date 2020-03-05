@@ -68,7 +68,7 @@ More details can be found in ESSAY.txt
 - terms_eval.py: Merging algorithms for OR, NOT, AND [with skip pointer logic where possible]
 - util.py: Helper functions for getting terms, postings list, formatting, parsing and evaluating query
 - dictionary.txt: To store the dictionary of the corpus in text file
-- posting.txt: To store the posting lists with skip pointer impl in text file
+- postings.txt: To store the posting lists with skip pointer impl in text file
 
 - README.txt: The file you are looking at which gives a overview
 - ESSAY.txt: File containing succinct answers to some questions

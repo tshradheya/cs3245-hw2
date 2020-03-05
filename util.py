@@ -9,7 +9,7 @@ STEMMER = nltk.stem.porter.PorterStemmer()
 def get_posting_list(posting_file, offset):
     """
     Gets posting list for a given offset in file
-    :param posting_file: posting.txt disk file
+    :param posting_file: postings.txt disk file
     :param offset: the offset to seek to in file
     :return: Posting list [(1, 0), (10,0)]
     """

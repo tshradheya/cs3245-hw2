@@ -7,12 +7,24 @@ STEMMER = nltk.stem.PorterStemmer()
 
 
 def get_posting_list(posting_file, offset):
+    """
+    Gets posting list for a given offset in file
+    :param posting_file: posting.txt disk file
+    :param offset: the offset to seek to in file
+    :return: Posting list [(1, 0), (10,0)]
+    """
     with open(posting_file, 'rb') as file:
         file.seek(offset)
         return pickle.load(file)
 
-#retrieves the tokenzied/stemmed words in each document
+
 def read_document(directory, doc):
+    """
+    retrieves the tokenzied/stemmed words in each document
+    :param directory: of all corpus documents
+    :param doc: documentId to read
+    :return: all normalised terms
+    """
     terms = []
     with open(os.path.join(directory, str(doc))) as in_file:
         content = in_file.read()
@@ -24,8 +36,12 @@ def read_document(directory, doc):
 
         return terms
 
-#converts the input query to a postfix expression using Shunting yard algorithm
 def reverse_polish_expression(query):
+    """
+    Converts the input query to a postfix expression using Shunting yard algorithm
+    :param query: Query to evaluate. E.g. a AND b
+    :return: Postfix expression of query. E.g. a b AND
+    """
 
     query_tokens = nltk.tokenize.word_tokenize(query)
     postfix_expression = []
@@ -58,8 +74,15 @@ def reverse_polish_expression(query):
 
     return postfix_expression
 
-#computes the result of the user query
+
 def execute_query(query, dictionary, posting_file):
+    """
+    Computes the result of the user query
+    :param query: Postfix expression
+    :param dictionary: in memory dictionary object
+    :param posting_file:
+    :return: final result in posting list format
+    """
 
     OPERATORS = ['NOT', 'AND', 'OR']
     operands = []
@@ -103,6 +126,11 @@ def execute_query(query, dictionary, posting_file):
 
 
 def format_result(result):
+    """
+    Formats result as required for output file
+    :param result: In format [(1, 0), (10, 0)]
+    :return: '1 10' formatted string
+    """
     formatted_res = list()
     for val in result:
         formatted_res.append(val[0])

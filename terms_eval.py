@@ -4,7 +4,15 @@ from math import sqrt
 ALL_DOCS = "$all_docs$"
 
 def eval_NOT(posting_file, dictionary, first):
+    """
+    Evaluates NOT of first
+    :param posting_file: posting.txt disk file
+    :param dictionary: in memory dictionary
+    :param first: term or result of which NOT needs to be done
+    :return: Result in format of posting list of NOT a
+    """
     result = list()
+    #  Get from posting if term otherwise use given result
     if isinstance(first, str):
         first_offset = dictionary.get_offset_of_term(first)
         first_list = util.get_posting_list(posting_file, first_offset)
@@ -36,8 +44,17 @@ def eval_NOT(posting_file, dictionary, first):
     return result
 
 def eval_OR(posting_file, dictionary, first, second):
+    """
+    Evaluates first OR second  [can be term or direct result]
+    :param posting_file: posting.txt disk file
+    :param dictionary: in memory dictionary
+    :param first: term or result of which OR needs to be done
+    :param second: term or result of which OR needs to be done
+    :return: Result in format of posting list of a OR B
+    """
     result = list()
 
+    #  Get from posting if term otherwise use given result
     if isinstance(first, str):
         first_offset = dictionary.get_offset_of_term(first)
         first_list = util.get_posting_list(posting_file, first_offset)
@@ -81,8 +98,18 @@ def eval_OR(posting_file, dictionary, first, second):
     return result
 
 def eval_AND(posting_file, dictionary, first, second):
+    """
+    Evaluates first AND second  [can be term or direct result]
+    Uses skip pointer if one of argument is directly a posting list with correct skips
+    :param posting_file: posting.txt disk file
+    :param dictionary: in memory dictionary
+    :param first: term or result of which AND needs to be done
+    :param second: term or result of which AND needs to be done
+    :return: Result in format of posting list of a AND B
+    """
     result = list()
 
+    # Based on if its a term or intermediate result find the posting list and use skip pointer if possible
     if not isinstance(first, str) and not isinstance(second, str):
         result = eval_AND_Lists(first, second)
     elif isinstance(first, str) and not isinstance(second, str):
@@ -131,6 +158,13 @@ def eval_AND(posting_file, dictionary, first, second):
     return result
 
 def eval_AND_Lists(first_list, second_list):
+    """
+    Evaluates first_list AND second_list  [is direct result and hence no skip pointer]
+    :param first_list: list of which AND needs to be done
+    :param second_list: list of which AND needs to be done
+    :return: Result in format of posting list of list() AND list()
+    """
+
     result = list()
     idx_f = 0
     idx_s = 0
@@ -166,6 +200,12 @@ def eval_AND_Lists(first_list, second_list):
 
 
 def eval_AND_List_And_Term(res_list, term_list):
+    """
+    Evaluates first_list AND term_list [can use skip for term_list since directly queried from disk]
+    :param res_list: list of which AND needs to be done
+    :param term_list: term of which AND needs to be done. skip can be used for this
+    :return: Result in format of posting list of list() AND term
+    """
     result = list()
     idx_f = 0
     idx_s = 0
@@ -195,7 +235,7 @@ def eval_AND_List_And_Term(res_list, term_list):
 
 def eval_AND_NOT(posting_file, dictionary, first, second):
     """
-    first AND NOT second
+    first AND NOT second [using skip pointer]
     :param posting_file: posting.txt
     :param dictionary: Dictionary object in memory
     :param first: first postings list
@@ -204,6 +244,7 @@ def eval_AND_NOT(posting_file, dictionary, first, second):
     """
     result = list()
 
+    # If the term being NOT is a string then we use skip pointer otherwise we cant since its intermediate result
     if not isinstance(first, str) and not isinstance(second, str):
         result = eval_AND_NOT_Lists(first, second)
     elif isinstance(first, str) and not isinstance(second, str):
@@ -251,6 +292,12 @@ def eval_AND_NOT(posting_file, dictionary, first, second):
 
 
 def eval_AND_NOT_Lists(first_list, second_list):
+    """
+    first_list AND NOT second_list [not using skip pointer]
+    :param first_list: first intermediate result list
+    :param second_list: second intermediate result list
+    :return: merged list
+    """
     result = list()
     idx_f = 0
     idx_s = 0

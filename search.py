@@ -3,7 +3,6 @@ import sys
 import getopt
 from dictionary import Dictionary
 import util
-import time
 
 def usage():
     print("usage: " + sys.argv[0] + " -d dictionary-file -p postings-file -q file-of-queries -o output-file-of-results")
@@ -13,7 +12,6 @@ def run_search(dict_file, postings_file, queries_file, results_file):
     using the given dictionary file and postings file,
     perform searching on the given queries file and output the results to a file
     """
-    print('running search on the queries...')
 
     dictionary = Dictionary(dict_file)
     dictionary.load()
@@ -28,7 +26,7 @@ def run_search(dict_file, postings_file, queries_file, results_file):
                     output_file.write(result)
 
 
-dictionary_file = postings_file = file_of_queries = output_file_of_results = None
+dictionary_file = postings_file = file_of_queries = file_of_output = None
 
 try:
     opts, args = getopt.getopt(sys.argv[1:], 'd:p:q:o:')

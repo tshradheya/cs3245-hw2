@@ -14,16 +14,22 @@ def run_search(dict_file, postings_file, queries_file, results_file):
     """
 
     dictionary = Dictionary(dict_file)
-    dictionary.load()
+    dictionary.load()  # Load dictionary into memory
 
     with open(queries_file, 'r') as query_file:
         with open(results_file, 'w') as output_file:
+            complete_result = []
             for query in query_file:
-                if query is not None:
+                if query.strip():
                     processed_query = util.reverse_polish_expression(query)
                     result = util.execute_query(processed_query, dictionary, postings_file)
                     result = util.format_result(result)
-                    output_file.write(result)
+                    complete_result.append(result)
+                else:
+                    complete_result.append("")
+
+            write_data = "\n".join(complete_result)
+            output_file.write(write_data)
 
 
 dictionary_file = postings_file = file_of_queries = file_of_output = None

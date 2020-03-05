@@ -3,7 +3,7 @@ import os
 import terms_eval
 import pickle
 
-STEMMER = nltk.stem.PorterStemmer()
+STEMMER = nltk.stem.porter.PorterStemmer()
 
 
 def get_posting_list(posting_file, offset):
@@ -32,7 +32,7 @@ def read_document(directory, doc):
         for sentence in sentences:
             words = nltk.tokenize.word_tokenize(sentence)
             for word in words:
-                terms.append(STEMMER.stem(word.lower()))
+                terms.append(STEMMER.stem(word).lower())
 
         return terms
 
@@ -98,7 +98,7 @@ def execute_query(query, dictionary, posting_file):
             intermediate_result = []
             if token == 'NOT':
                 term = operands.pop()
-                #optimize for AND NOT queries
+                #  optimize for AND NOT queries
                 if i < len_query - 1 and len(operands) > 0 and query[i+1] == "AND":
                     i += 1
                     later_term = operands.pop()
@@ -120,7 +120,10 @@ def execute_query(query, dictionary, posting_file):
     final_result = operands.pop()
     if isinstance(final_result, str):
         first_offset = dictionary.get_offset_of_term(final_result)
-        final_result = get_posting_list(posting_file, first_offset)
+        if first_offset != -1:
+            final_result = get_posting_list(posting_file, first_offset)
+        else:
+            final_result = []
 
     return final_result
 
@@ -135,6 +138,6 @@ def format_result(result):
     for val in result:
         formatted_res.append(val[0])
 
-    formatted_res = " ".join(map(str, formatted_res)) + "\n"
+    formatted_res = " ".join(map(str, formatted_res))
     return formatted_res
 

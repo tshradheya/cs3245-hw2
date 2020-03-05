@@ -15,12 +15,18 @@ def eval_NOT(posting_file, dictionary, first):
     #  Get from posting if term otherwise use given result
     if isinstance(first, str):
         first_offset = dictionary.get_offset_of_term(first)
-        first_list = util.get_posting_list(posting_file, first_offset)
+        if first_offset != -1:
+            first_list = util.get_posting_list(posting_file, first_offset)
+        else:
+            first_list = []
     else:
         first_list = first
 
     all_docs_offset = dictionary.get_offset_of_term(ALL_DOCS)
-    all_docs_list = util.get_posting_list(posting_file, all_docs_offset)
+    if all_docs_offset != -1:
+        all_docs_list = util.get_posting_list(posting_file, all_docs_offset)
+    else:
+        all_docs_list = []
 
     idx_f = 0
     idx_s = 0
@@ -57,13 +63,19 @@ def eval_OR(posting_file, dictionary, first, second):
     #  Get from posting if term otherwise use given result
     if isinstance(first, str):
         first_offset = dictionary.get_offset_of_term(first)
-        first_list = util.get_posting_list(posting_file, first_offset)
+        if first_offset != -1:
+            first_list = util.get_posting_list(posting_file, first_offset)
+        else:
+            first_list = []
     else:
         first_list = first
 
     if isinstance(second, str):
         second_offset = dictionary.get_offset_of_term(second)
-        second_list = util.get_posting_list(posting_file, second_offset)
+        if second_offset != -1:
+            second_list = util.get_posting_list(posting_file, second_offset)
+        else:
+            second_list = []
     else:
         second_list = second
 
@@ -114,19 +126,31 @@ def eval_AND(posting_file, dictionary, first, second):
         result = eval_AND_Lists(first, second)
     elif isinstance(first, str) and not isinstance(second, str):
         offset = dictionary.get_offset_of_term(first)
-        term_list = util.get_posting_list(posting_file, offset)
+        if offset != -1:
+            term_list = util.get_posting_list(posting_file, offset)
+        else:
+            term_list = []
         result = eval_AND_List_And_Term(second, term_list)
     elif not isinstance(first, str) and isinstance(second, str):
         offset = dictionary.get_offset_of_term(second)
-        term_list = util.get_posting_list(posting_file, offset)
+        if offset != -1:
+            term_list = util.get_posting_list(posting_file, offset)
+        else:
+            term_list = []
         result = eval_AND_List_And_Term(first, term_list)
     else:
 
         first_offset = dictionary.get_offset_of_term(first)
-        first_list = util.get_posting_list(posting_file, first_offset)
+        if first_offset != -1:
+            first_list = util.get_posting_list(posting_file, first_offset)
+        else:
+            first_list = []
 
         second_offset = dictionary.get_offset_of_term(second)
-        second_list = util.get_posting_list(posting_file, second_offset)
+        if second_offset != -1:
+            second_list = util.get_posting_list(posting_file, second_offset)
+        else:
+            second_list = []
 
         idx_f = 0
         idx_s = 0
@@ -249,17 +273,26 @@ def eval_AND_NOT(posting_file, dictionary, first, second):
         result = eval_AND_NOT_Lists(first, second)
     elif isinstance(first, str) and not isinstance(second, str):
         offset = dictionary.get_offset_of_term(first)
-        term_list = util.get_posting_list(posting_file, offset)
+        if offset != -1:
+            term_list = util.get_posting_list(posting_file, offset)
+        else:
+            term_list = []
         result = eval_AND_NOT_Lists(term_list, second)
     else:
         if isinstance(first, str):
             first_offset = dictionary.get_offset_of_term(first)
-            first_list = util.get_posting_list(posting_file, first_offset)
+            if first_offset != -1:
+                first_list = util.get_posting_list(posting_file, first_offset)
+            else:
+                first_list = []
         else:
             first_list = first
 
         second_offset = dictionary.get_offset_of_term(second)
-        second_list = util.get_posting_list(posting_file, second_offset)
+        if second_offset != -1:
+            second_list = util.get_posting_list(posting_file, second_offset)
+        else:
+            second_list = []
 
         idx_f = 0
         idx_s = 0

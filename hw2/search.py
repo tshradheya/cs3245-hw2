@@ -21,8 +21,8 @@ def run_search(dict_file, postings_file, queries_file, results_file):
             complete_result = []
             for query in query_file:
                 if query.strip():
-                    # processed_query = util.reverse_polish_expression(query)
-                    # result = util.execute_query(processed_query, dictionary, postings_file)
+                    processed_query = util.reverse_polish_expression(query)
+                    result = util.execute_query(processed_query, dictionary, postings_file)
                     result = util.format_result(result)
                     complete_result.append(result)
                 else:

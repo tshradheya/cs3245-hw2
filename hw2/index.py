@@ -8,6 +8,7 @@ import pickle
 
 
 from dictionary import Dictionary
+from skippointer import SkipPointer
 import util
 
 temp_file = "temp_file.txt"  # Used for temporary purposes and deleted later
@@ -48,6 +49,10 @@ def build_index(in_dir, out_dict, out_postings):
             offset = temp_posting_file.tell()
             dictionary.add_term(token, len(docs_set), offset)
             pickle.dump(sorted(list(docs_set)), temp_posting_file)
+
+    # Post processing step to add skip pointers to postings list
+    skipPointer = SkipPointer("ROOT_L")
+    skipPointer.set_skip_for_posting_list(out_postings, temp_file, dictionary)
 
     dictionary.save()
     os.remove(temp_file)

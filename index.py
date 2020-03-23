@@ -67,6 +67,7 @@ def build_index(in_dir, out_dict, out_postings):
 
     dictionary.save()
 
+
 input_directory = output_file_dictionary = output_file_postings = None
 
 try:

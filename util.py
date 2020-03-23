@@ -41,7 +41,7 @@ def read_document(directory, doc):
 def format_result(result):
     """
     Formats result as required for output file
-    :param result: In format [(1, 0), (10, 0)]
+    :param result: In format [1, 10]
     :return: '1 10' formatted string
     """
     formatted_res = list()
@@ -100,19 +100,6 @@ def query_eval(dictionary, query, posting_file):
         doc_norm_len = dictionary.get_normalised_doc_length(docId)
         document_score[docId] = score / (norm_query * doc_norm_len)
 
-    #
-    # h = heapq.nlargest(10, document_score.values())
-    # result = list()
-    # for val in h:
-    #     result.append(document_score.)
-    # return h
-
-    # return map(lambda x: x[0], heapq.nlargest(10, document_score.items(), key=lambda x: x[1]))
-
-    result = sorted(document_score.items(), key=lambda x: x[1], reverse=True)[:10]
-    print(result)
-    res = list()
-    for x in result:
-        res.append(x[0])
+    res = heapq.nlargest(10, document_score, key=document_score.__getitem__)
 
     return res

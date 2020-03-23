@@ -6,12 +6,8 @@ import getopt
 import os
 import pickle
 
-
 from dictionary import Dictionary
 import util
-
-temp_file = "temp_file.txt"  # Used for temporary purposes and deleted later
-ALL_DOCS = "$all_docs$"  # Used to denote all document ids term
 
 
 def usage():
@@ -28,30 +24,44 @@ def build_index(in_dir, out_dict, out_postings):
     dictionary = Dictionary(out_dict)
 
     temp_dictionary = dict()
-    temp_dictionary[ALL_DOCS] = set()
     # For each document get the terms and add it into the temporary in-memory posting lists
     for document in indexing_doc_files:
-        temp_dictionary[ALL_DOCS].add((document, 0))
 
         terms = util.read_document(in_dir, document)
+        tf_for_doc = dict()
+
         for term in terms:
-            if term in temp_dictionary:
-                doc_set = temp_dictionary[term]
-                doc_set.add((document, 0))
+            if term in tf_for_doc:
+                tf_for_doc[term] += 1
             else:
-                temp_dictionary[term] = set()
-                temp_dictionary[term].add((document, 0))
+                tf_for_doc[term] = 1
+
+            matched = False
+            if term in temp_dictionary:
+                doc_list = temp_dictionary[term]
+                for x in doc_list:
+                    if x[0] == document:
+                        temp_dictionary[term].remove(x)
+                        temp_dictionary[term].append((x[0], x[1] + 1))
+                        matched = True
+                        break
+                if not matched:
+                    temp_dictionary[term].append((document, 1))
+            else:
+                temp_dictionary[term] = list()
+                temp_dictionary[term].append((document, 1))
+
+        dictionary.add_normalised_doc_length(document, tf_for_doc)
+        dictionary.add_doc_count()
 
     # Save dictionary on disk by getting offset in postings file
-    with open(temp_file, 'wb') as temp_posting_file:
-        for token, docs_set in sorted(temp_dictionary.items()):
-            offset = temp_posting_file.tell()
-            dictionary.add_term(token, len(docs_set), offset)
-            pickle.dump(sorted(list(docs_set)), temp_posting_file)
+    with open(out_postings, 'wb') as posting_file:
+        for token, docs_list in sorted(temp_dictionary.items()):
+            offset = posting_file.tell()
+            dictionary.add_term(token, len(docs_list), offset)
+            pickle.dump(sorted(docs_list), posting_file)
 
     dictionary.save()
-    os.remove(temp_file)
-
 
 input_directory = output_file_dictionary = output_file_postings = None
 

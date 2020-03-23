@@ -36,27 +36,31 @@ def build_index(in_dir, out_dict, out_postings):
             else:
                 tf_for_doc[term] = 1
 
-            matched = False
             if term in temp_dictionary:
-                doc_list = temp_dictionary[term]
-                for x in doc_list:
-                    if x[0] == document:
-                        temp_dictionary[term].remove(x)
-                        temp_dictionary[term].append((x[0], x[1] + 1))
-                        matched = True
-                        break
-                if not matched:
-                    temp_dictionary[term].append((document, 1))
+                if document in temp_dictionary[term]:
+                    temp_dictionary[term][document] += 1
+                else:
+                    temp_dictionary[term][document] = 1
             else:
-                temp_dictionary[term] = list()
-                temp_dictionary[term].append((document, 1))
+                temp_dictionary[term] = dict()
+                temp_dictionary[term][document] = 1
 
         dictionary.add_normalised_doc_length(document, tf_for_doc)
         dictionary.add_doc_count()
 
+    posting_formatted = dict()
+
+    for key, docs in temp_dictionary.items():
+        for docId, df in docs.items():
+            if key in posting_formatted:
+                posting_formatted[key].append((docId, df))
+            else:
+                posting_formatted[key] = list()
+                posting_formatted[key].append((docId, df))
+
     # Save dictionary on disk by getting offset in postings file
     with open(out_postings, 'wb') as posting_file:
-        for token, docs_list in sorted(temp_dictionary.items()):
+        for token, docs_list in sorted(posting_formatted.items()):
             offset = posting_file.tell()
             dictionary.add_term(token, len(docs_list), offset)
             pickle.dump(sorted(docs_list), posting_file)

@@ -29,9 +29,8 @@ def query_eval(query, dictionary, postings):
 
     tf_query = dict()
     document_score = dict()
-    total_docs = dictionary.get_doc_count()
-
     query_norm_tokens = list()
+    total_docs = dictionary.get_doc_count()
 
     for token in query_tokens:
         query_norm_tokens.append(STEMMER.stem(token.lower()))
@@ -67,19 +66,18 @@ def query_eval(query, dictionary, postings):
                 document_score[doc_id] = 0
             document_score[doc_id] += tf_query[norm_token] * tf_doc
 
+
     norm_query = 0
     for term, wt in tf_query.items():
         norm_query += (wt * wt)
-
     norm_query = sqrt(norm_query)
 
     for docId, score in document_score.items():
         doc_norm_len = dictionary.get_normalised_doc_length(docId)
         document_score[docId] = score / (norm_query * doc_norm_len)
 
-    res = heapq.nlargest(10, document_score, key=document_score.__getitem__)
+    return heapq.nlargest(10, document_score, key=document_score.__getitem__)
 
-    return res
 
 
 def format_result(result):

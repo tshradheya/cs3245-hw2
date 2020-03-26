@@ -18,7 +18,7 @@ For more than 2 words in a phrase, iteratively merge them. This will give some f
 2. The main difference between longer and short documents will be how TF weight will be impacted since smaller doc with many
 similar words will be ranked very high and for long docs words tend to appear multiple times and hence can have higher score.
 This will affect the quality of results as they will not be a good representation. To improve this normalizing with just length might not be enough
-and other criteria must be considered so tf weight is correctly assigned to these docs for the query. The scheme ltc.lnc might not need much change.
+and other criteria must be considered so tf weight is correctly assigned to these docs for the query. The scheme lnc.ltc might not need much change.
 Maybe we could replace cosine with something that doesnt need normalisation or prevent tf from getting much weightage in score
 
 

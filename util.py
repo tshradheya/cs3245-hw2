@@ -31,7 +31,6 @@ def query_eval(query, dictionary, postings):
     document_score = dict()
     for token in query_tokens:
         norm_token = STEMMER.stem(token.lower())
-        print(norm_token)
         if norm_token in tf_query:
             tf_query[norm_token] += 1
         else:

@@ -1,23 +1,9 @@
 import nltk
 import os
-import pickle
 from math import log, sqrt
 import heapq
 
 STEMMER = nltk.stem.porter.PorterStemmer()
-
-
-def get_posting_list(posting_file, offset):
-    """
-    Gets posting list for a given offset in file
-    :param posting_file: postings.txt disk file
-    :param offset: the offset to seek to in file
-    :return: Posting list [(1, 0), (10,0)]
-    """
-    with open(posting_file, 'rb') as file:
-        file.seek(offset)
-        return pickle.load(file)
-
 
 def read_document(directory, doc):
     """
@@ -37,28 +23,15 @@ def read_document(directory, doc):
 
         return terms
 
+def query_eval(query, dictionary, postings):
 
-def format_result(result):
-    """
-    Formats result as required for output file
-    :param result: In format [1, 10]
-    :return: '1 10' formatted string
-    """
-    formatted_res = list()
-    for val in result:
-        formatted_res.append(val)
-
-    formatted_res = " ".join(map(str, formatted_res))
-    return formatted_res
-
-
-def query_eval(dictionary, query, posting_file):
     query_tokens = nltk.tokenize.word_tokenize(query)
 
     tf_query = dict()
     document_score = dict()
     for token in query_tokens:
         norm_token = STEMMER.stem(token.lower())
+        print(norm_token)
         if norm_token in tf_query:
             tf_query[norm_token] += 1
         else:
@@ -69,9 +42,9 @@ def query_eval(dictionary, query, posting_file):
 
         offset = dictionary.get_offset_of_term(norm_token)
         if offset != -1:
-            postings = get_posting_list(posting_file, offset)
+            posting_list = postings.get_posting_list(offset)
         else:
-            postings = list()
+            posting_list = list()
 
         df = dictionary.get_df(norm_token)
 
@@ -82,7 +55,7 @@ def query_eval(dictionary, query, posting_file):
 
         tf_query[norm_token] = idf * (1 + log(tf_query[norm_token], 10))
 
-        for posting in postings:
+        for posting in posting_list:
             doc_id = posting[0]
             tf_doc = 1.0 + log(posting[1], 10)
 
@@ -103,3 +76,17 @@ def query_eval(dictionary, query, posting_file):
     res = heapq.nlargest(10, document_score, key=document_score.__getitem__)
 
     return res
+
+
+def format_result(result):
+    """
+    Formats result as required for output file
+    :param result: In format [1, 10]
+    :return: '1 10' formatted string
+    """
+    formatted_res = list()
+    for val in result:
+        formatted_res.append(val)
+
+    formatted_res = " ".join(map(str, formatted_res))
+    return formatted_res

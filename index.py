@@ -7,6 +7,7 @@ import os
 import pickle
 
 from dictionary import Dictionary
+from postingsfile import PostingsFile
 import util
 
 
@@ -21,7 +22,9 @@ def build_index(in_dir, out_dict, out_postings):
     print('indexing...')
 
     indexing_doc_files = sorted(map(int, os.listdir(in_dir)))
+
     dictionary = Dictionary(out_dict)
+    postings = PostingsFile(out_postings)
 
     temp_dictionary = dict()
     # For each document get the terms and add it into the temporary in-memory posting lists
@@ -48,22 +51,9 @@ def build_index(in_dir, out_dict, out_postings):
         dictionary.add_normalised_doc_length(document, tf_for_doc)
         dictionary.add_doc_count()
 
-    posting_formatted = dict()
+    postings.format_posting(temp_dictionary)
 
-    for key, docs in temp_dictionary.items():
-        for docId, df in docs.items():
-            if key in posting_formatted:
-                posting_formatted[key].append((docId, df))
-            else:
-                posting_formatted[key] = list()
-                posting_formatted[key].append((docId, df))
-
-    # Save dictionary on disk by getting offset in postings file
-    with open(out_postings, 'wb') as posting_file:
-        for token, docs_list in sorted(posting_formatted.items()):
-            offset = posting_file.tell()
-            dictionary.add_term(token, len(docs_list), offset)
-            pickle.dump(sorted(docs_list), posting_file)
+    postings.save(dictionary)
 
     dictionary.save()
 

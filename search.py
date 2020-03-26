@@ -2,6 +2,7 @@
 import sys
 import getopt
 from dictionary import Dictionary
+from postingsfile import PostingsFile
 import util
 
 def usage():
@@ -14,6 +15,8 @@ def run_search(dict_file, postings_file, queries_file, results_file):
     """
 
     dictionary = Dictionary(dict_file)
+    postings = PostingsFile(postings_file)
+
     dictionary.load()  # Load dictionary into memory
 
     with open(queries_file, 'r') as query_file:
@@ -21,7 +24,7 @@ def run_search(dict_file, postings_file, queries_file, results_file):
             complete_result = []
             for query in query_file:
                 if query.strip():
-                    result = util.query_eval(dictionary, query, postings_file)
+                    result = util.eval_query(query, dictionary, postings)
                     result = util.format_result(result)
                     complete_result.append(result)
                 else:
@@ -29,6 +32,9 @@ def run_search(dict_file, postings_file, queries_file, results_file):
 
             write_data = "\n".join(complete_result)
             output_file.write(write_data)
+
+        output_file.close()
+    query_file.close()
 
 
 dictionary_file = postings_file = file_of_queries = file_of_output = None

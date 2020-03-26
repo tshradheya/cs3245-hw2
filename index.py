@@ -1,5 +1,7 @@
 #!/usr/bin/python3
 import re
+from collections import defaultdict
+
 import nltk
 import sys
 import getopt
@@ -7,6 +9,7 @@ import os
 import pickle
 
 from dictionary import Dictionary
+from postingsfile import PostingsFile
 import util
 
 
@@ -21,50 +24,30 @@ def build_index(in_dir, out_dict, out_postings):
     print('indexing...')
 
     indexing_doc_files = sorted(map(int, os.listdir(in_dir)))
-    dictionary = Dictionary(out_dict)
 
-    temp_dictionary = dict()
+    dictionary = Dictionary(out_dict)
+    postings = PostingsFile(out_postings)
+
+    temp_dictionary = defaultdict(lambda: defaultdict(int))
+
     # For each document get the terms and add it into the temporary in-memory posting lists
     for document in indexing_doc_files:
-
         terms = util.read_document(in_dir, document)
-        tf_for_doc = dict()
+        tf_for_doc = defaultdict(int)
 
         for term in terms:
-            if term in tf_for_doc:
-                tf_for_doc[term] += 1
-            else:
-                tf_for_doc[term] = 1
+            tf_for_doc[term] += 1
+            temp_dictionary[term][document] += 1
 
-            if term in temp_dictionary:
-                if document in temp_dictionary[term]:
-                    temp_dictionary[term][document] += 1
-                else:
-                    temp_dictionary[term][document] = 1
-            else:
-                temp_dictionary[term] = dict()
-                temp_dictionary[term][document] = 1
-
+        # Maintain normalised length and count in dictionary.txt
         dictionary.add_normalised_doc_length(document, tf_for_doc)
         dictionary.add_doc_count()
 
-    posting_formatted = dict()
+    # Format posting to store in posting list
+    postings.format_posting(temp_dictionary)
 
-    for key, docs in temp_dictionary.items():
-        for docId, df in docs.items():
-            if key in posting_formatted:
-                posting_formatted[key].append((docId, df))
-            else:
-                posting_formatted[key] = list()
-                posting_formatted[key].append((docId, df))
-
-    # Save dictionary on disk by getting offset in postings file
-    with open(out_postings, 'wb') as posting_file:
-        for token, docs_list in sorted(posting_formatted.items()):
-            offset = posting_file.tell()
-            dictionary.add_term(token, len(docs_list), offset)
-            pickle.dump(sorted(docs_list), posting_file)
-
+    # Save dictionary and posting list with offsets tracking
+    postings.save(dictionary)
     dictionary.save()
 
 

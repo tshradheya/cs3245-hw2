@@ -1,19 +1,16 @@
 import pickle
+from collections import defaultdict
 
 
 class PostingsFile(object):
     def __init__(self, file_name):
         self.disk_file = file_name
-        self.postings = dict()
+        self.postings = defaultdict(list)
 
     def format_posting(self, temp_postings):
         for key, docs in temp_postings.items():
             for docId, df in docs.items():
-                if key in self.postings:
-                    self.postings[key].append((docId, df))
-                else:
-                    self.postings[key] = list()
-                    self.postings[key].append((docId, df))
+                self.postings[key].append((docId, df))
 
     def save(self, dictionary):
         with open(self.disk_file, 'wb') as posting_file:

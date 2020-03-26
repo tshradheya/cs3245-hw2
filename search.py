@@ -24,7 +24,7 @@ def run_search(dict_file, postings_file, queries_file, results_file):
             complete_result = []
             for query in query_file:
                 if query.strip():
-                    result = util.query_eval(query, dictionary, postings)
+                    result = util.eval_query(query, dictionary, postings)
                     result = util.format_result(result)
                     complete_result.append(result)
                 else:

@@ -1,3 +1,5 @@
+from collections import defaultdict
+
 import nltk
 import os
 from math import log, sqrt
@@ -23,12 +25,13 @@ def read_document(directory, doc):
 
         return terms
 
-def query_eval(query, dictionary, postings):
+def eval_query(query, dictionary, postings):
 
+    query = query.strip()
     query_tokens = nltk.tokenize.word_tokenize(query)
 
-    tf_query = dict()
-    document_score = dict()
+    tf_query = defaultdict(float)
+    document_score = defaultdict(int)
     query_norm_tokens = list()
     total_docs = dictionary.get_doc_count()
 
@@ -36,10 +39,7 @@ def query_eval(query, dictionary, postings):
         query_norm_tokens.append(STEMMER.stem(token.lower()))
 
     for norm_token in query_norm_tokens:
-        if norm_token in tf_query:
-            tf_query[norm_token] += 1
-        else:
-            tf_query[norm_token] = 1
+        tf_query[norm_token] += 1
 
     for norm_token in query_norm_tokens:
 
@@ -62,8 +62,6 @@ def query_eval(query, dictionary, postings):
             doc_id = posting[0]
             tf_doc = 1.0 + log(posting[1], 10)
 
-            if doc_id not in document_score:
-                document_score[doc_id] = 0
             document_score[doc_id] += tf_query[norm_token] * tf_doc
 
     norm_query = 0

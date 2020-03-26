@@ -1,5 +1,7 @@
 #!/usr/bin/python3
 import re
+from collections import defaultdict
+
 import nltk
 import sys
 import getopt
@@ -26,27 +28,16 @@ def build_index(in_dir, out_dict, out_postings):
     dictionary = Dictionary(out_dict)
     postings = PostingsFile(out_postings)
 
-    temp_dictionary = dict()
+    temp_dictionary = defaultdict(lambda: defaultdict(int))
+
     # For each document get the terms and add it into the temporary in-memory posting lists
     for document in indexing_doc_files:
-
         terms = util.read_document(in_dir, document)
-        tf_for_doc = dict()
+        tf_for_doc = defaultdict(int)
 
         for term in terms:
-            if term in tf_for_doc:
-                tf_for_doc[term] += 1
-            else:
-                tf_for_doc[term] = 1
-
-            if term in temp_dictionary:
-                if document in temp_dictionary[term]:
-                    temp_dictionary[term][document] += 1
-                else:
-                    temp_dictionary[term][document] = 1
-            else:
-                temp_dictionary[term] = dict()
-                temp_dictionary[term][document] = 1
+            tf_for_doc[term] += 1
+            temp_dictionary[term][document] += 1
 
         dictionary.add_normalised_doc_length(document, tf_for_doc)
         dictionary.add_doc_count()
@@ -54,7 +45,6 @@ def build_index(in_dir, out_dict, out_postings):
     postings.format_posting(temp_dictionary)
 
     postings.save(dictionary)
-
     dictionary.save()
 
 

@@ -29,9 +29,8 @@ class PostingsFile(object):
     def get_posting_list(self, offset):
         """
         Gets posting list for a given offset in file
-        :param posting_file: postings.txt disk file
         :param offset: the offset to seek to in file
-        :return: Posting list [(1, 0), (10,0)]
+        :return: Posting list with TF [(1, 5), (10, 4)]
         """
         with open(self.disk_file, 'rb') as file:
             file.seek(offset)

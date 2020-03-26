@@ -66,7 +66,6 @@ def query_eval(query, dictionary, postings):
                 document_score[doc_id] = 0
             document_score[doc_id] += tf_query[norm_token] * tf_doc
 
-
     norm_query = 0
     for term, wt in tf_query.items():
         norm_query += (wt * wt)
@@ -77,7 +76,6 @@ def query_eval(query, dictionary, postings):
         document_score[docId] = score / (norm_query * doc_norm_len)
 
     return heapq.nlargest(10, document_score, key=document_score.__getitem__)
-
 
 
 def format_result(result):

@@ -39,11 +39,14 @@ def build_index(in_dir, out_dict, out_postings):
             tf_for_doc[term] += 1
             temp_dictionary[term][document] += 1
 
+        # Maintain normalised length and count in dictionary.txt
         dictionary.add_normalised_doc_length(document, tf_for_doc)
         dictionary.add_doc_count()
 
+    # Format posting to store in posting list
     postings.format_posting(temp_dictionary)
 
+    # Save dictionary and posting list with offsets tracking
     postings.save(dictionary)
     dictionary.save()
 

@@ -31,7 +31,13 @@ def read_document(directory, doc):
         return terms
 
 def eval_query(query, dictionary, postings):
-
+    """
+    Main part of searching. Evaluates the query and returns top 10 results using heap based on ltc.lnc
+    :param query: query free text
+    :param dictionary: Object of Dictionary
+    :param postings: Object of PostingsFile
+    :return: Top 10 results as an array []
+    """
     query = query.strip()
 
     if REMOVE_PUNCTUATION:

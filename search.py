@@ -33,6 +33,9 @@ def run_search(dict_file, postings_file, queries_file, results_file):
             write_data = "\n".join(complete_result)
             output_file.write(write_data)
 
+        output_file.close()
+    query_file.close()
+
 
 dictionary_file = postings_file = file_of_queries = file_of_output = None
 

@@ -1,11 +1,12 @@
 from collections import defaultdict
-
 import nltk
 import os
 from math import log, sqrt
 import heapq
+import string
 
 STEMMER = nltk.stem.porter.PorterStemmer()
+REMOVE_PUNCTUATION = False
 
 def read_document(directory, doc):
     """
@@ -15,10 +16,14 @@ def read_document(directory, doc):
     :return: all normalised terms
     """
     terms = []
+
     with open(os.path.join(directory, str(doc))) as in_file:
         content = in_file.read()
         sentences = nltk.tokenize.sent_tokenize(content)
         for sentence in sentences:
+            if REMOVE_PUNCTUATION:
+                exclude = set(string.punctuation)
+                sentence = ''.join(ch for ch in sentence if ch not in exclude)
             words = nltk.tokenize.word_tokenize(sentence)
             for word in words:
                 terms.append(STEMMER.stem(word.lower()))
@@ -28,6 +33,11 @@ def read_document(directory, doc):
 def eval_query(query, dictionary, postings):
 
     query = query.strip()
+
+    if REMOVE_PUNCTUATION:
+        exclude = set(string.punctuation)
+        query = ''.join(ch for ch in query if ch not in exclude)
+
     query_tokens = nltk.tokenize.word_tokenize(query)
 
     tf_query = defaultdict(float)

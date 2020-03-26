@@ -77,6 +77,7 @@ class Dictionary(object):
                 "terms": self.terms,
                 "normalised_doc_length": self.normalised_doc_length,
                 "num_of_docs": self.num_of_docs }, f)
+        f.close()
 
     def load(self):
         """
@@ -87,3 +88,4 @@ class Dictionary(object):
             self.terms = res["terms"]
             self.normalised_doc_length = res["normalised_doc_length"]
             self.num_of_docs = res["num_of_docs"]
+        f.close()

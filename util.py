@@ -29,15 +29,20 @@ def query_eval(query, dictionary, postings):
 
     tf_query = dict()
     document_score = dict()
+    total_docs = dictionary.get_doc_count()
+
+    query_norm_tokens = list()
+
     for token in query_tokens:
-        norm_token = STEMMER.stem(token.lower())
+        query_norm_tokens.append(STEMMER.stem(token.lower()))
+
+    for norm_token in query_norm_tokens:
         if norm_token in tf_query:
             tf_query[norm_token] += 1
         else:
             tf_query[norm_token] = 1
 
-    for token in query_tokens:
-        norm_token = STEMMER.stem(token.lower())
+    for norm_token in query_norm_tokens:
 
         offset = dictionary.get_offset_of_term(norm_token)
         if offset != -1:
@@ -50,7 +55,7 @@ def query_eval(query, dictionary, postings):
         if df == 0 or df == -1:
             idf = 0
         else:
-            idf = log(dictionary.get_doc_count() / df, 10)
+            idf = log(total_docs / df, 10)
 
         tf_query[norm_token] = idf * (1 + log(tf_query[norm_token], 10))
 

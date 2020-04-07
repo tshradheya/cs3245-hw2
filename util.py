@@ -57,7 +57,7 @@ def eval_query(query, dictionary, postings):
     for norm_token in query_norm_tokens:
         tf_query[norm_token] += 1
 
-    for norm_token in query_norm_tokens:
+    for norm_token in set(query_norm_tokens):
 
         offset = dictionary.get_offset_of_term(norm_token)
         if offset != -1:
